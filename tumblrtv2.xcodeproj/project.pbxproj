@@ -7,11 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E44471A8223AEAF100381122 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E44471A7223AEAF100381122 /* OpenGL.framework */; };
+		E44471AA223AEAF700381122 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E44471A9223AEAF700381122 /* GLUT.framework */; };
 		E4E0B16F223ADE71007492A2 /* tumblrtv2View.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0B16E223ADE71007492A2 /* tumblrtv2View.h */; };
 		E4E0B171223ADE71007492A2 /* tumblrtv2View.m in Sources */ = {isa = PBXBuildFile; fileRef = E4E0B170223ADE71007492A2 /* tumblrtv2View.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E44471A7223AEAF100381122 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		E44471A9223AEAF700381122 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		E4E0B16B223ADE71007492A2 /* tumblrtv2.saver */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = tumblrtv2.saver; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4E0B16E223ADE71007492A2 /* tumblrtv2View.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = tumblrtv2View.h; sourceTree = "<group>"; };
 		E4E0B170223ADE71007492A2 /* tumblrtv2View.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = tumblrtv2View.m; sourceTree = "<group>"; };
@@ -23,17 +27,29 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E44471AA223AEAF700381122 /* GLUT.framework in Frameworks */,
+				E44471A8223AEAF100381122 /* OpenGL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E44471A6223AEAF100381122 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E44471A9223AEAF700381122 /* GLUT.framework */,
+				E44471A7223AEAF100381122 /* OpenGL.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		E4E0B161223ADE71007492A2 = {
 			isa = PBXGroup;
 			children = (
 				E4E0B16D223ADE71007492A2 /* tumblrtv2 */,
 				E4E0B16C223ADE71007492A2 /* Products */,
+				E44471A6223AEAF100381122 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};

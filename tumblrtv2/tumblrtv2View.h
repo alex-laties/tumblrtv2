@@ -10,4 +10,8 @@
 
 @interface tumblrtv2View : ScreenSaverView
 
+@property (nonatomic, retain) NSOpenGLView* glView;
+
+- (NSOpenGLView *)createGLView;
+
 @end
