@@ -11,6 +11,7 @@
 #include <OpenGL/glu.h>
 #include <OpenGL/glext.h>
 #include <GLUT/glut.h>
+#import "go.h"
 
 @implementation tumblrtv2View
 
@@ -65,6 +66,7 @@
 - (void)animateOneFrame
 {
     [self.glView.openGLContext makeCurrentContext];
+    float point = HelloWorld(); // from render.go
     glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
     
@@ -75,8 +77,8 @@
         
     };
     
-    static float colors[] = {
-        1.0f, 0.0f, 0.0f,
+    float colors[] = {
+        1.0f, point, 0.0f,
         1.0f, 0.0f, 1.0f,
         0.0f, 0.0f, 1.0f
     };

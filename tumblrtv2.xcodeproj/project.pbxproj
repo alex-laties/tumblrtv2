@@ -9,13 +9,18 @@
 /* Begin PBXBuildFile section */
 		E44471A8223AEAF100381122 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E44471A7223AEAF100381122 /* OpenGL.framework */; };
 		E44471AA223AEAF700381122 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E44471A9223AEAF700381122 /* GLUT.framework */; };
+		E4BCD0C6223B0ECE007805B4 /* go.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E44471AE223AEF7700381122 /* go.a */; };
+		E4BCD0C8223B1126007805B4 /* go.h in Headers */ = {isa = PBXBuildFile; fileRef = E4BCD0C7223B1126007805B4 /* go.h */; };
 		E4E0B16F223ADE71007492A2 /* tumblrtv2View.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0B16E223ADE71007492A2 /* tumblrtv2View.h */; };
 		E4E0B171223ADE71007492A2 /* tumblrtv2View.m in Sources */ = {isa = PBXBuildFile; fileRef = E4E0B170223ADE71007492A2 /* tumblrtv2View.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E40EAF4D223AFA95009A631B /* build-go.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "build-go.sh"; sourceTree = "<group>"; };
 		E44471A7223AEAF100381122 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		E44471A9223AEAF700381122 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
+		E44471AE223AEF7700381122 /* go.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = go.a; sourceTree = "<group>"; };
+		E4BCD0C7223B1126007805B4 /* go.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = go.h; sourceTree = "<group>"; };
 		E4E0B16B223ADE71007492A2 /* tumblrtv2.saver */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = tumblrtv2.saver; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4E0B16E223ADE71007492A2 /* tumblrtv2View.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = tumblrtv2View.h; sourceTree = "<group>"; };
 		E4E0B170223ADE71007492A2 /* tumblrtv2View.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = tumblrtv2View.m; sourceTree = "<group>"; };
@@ -29,6 +34,7 @@
 			files = (
 				E44471AA223AEAF700381122 /* GLUT.framework in Frameworks */,
 				E44471A8223AEAF100381122 /* OpenGL.framework in Frameworks */,
+				E4BCD0C6223B0ECE007805B4 /* go.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -47,6 +53,7 @@
 		E4E0B161223ADE71007492A2 = {
 			isa = PBXGroup;
 			children = (
+				E40EAF4D223AFA95009A631B /* build-go.sh */,
 				E4E0B16D223ADE71007492A2 /* tumblrtv2 */,
 				E4E0B16C223ADE71007492A2 /* Products */,
 				E44471A6223AEAF100381122 /* Frameworks */,
@@ -64,6 +71,8 @@
 		E4E0B16D223ADE71007492A2 /* tumblrtv2 */ = {
 			isa = PBXGroup;
 			children = (
+				E4BCD0C7223B1126007805B4 /* go.h */,
+				E44471AE223AEF7700381122 /* go.a */,
 				E4E0B16E223ADE71007492A2 /* tumblrtv2View.h */,
 				E4E0B170223ADE71007492A2 /* tumblrtv2View.m */,
 				E4E0B172223ADE71007492A2 /* Info.plist */,
@@ -78,6 +87,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E4BCD0C8223B1126007805B4 /* go.h in Headers */,
 				E4E0B16F223ADE71007492A2 /* tumblrtv2View.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -92,7 +102,6 @@
 				E4E0B166223ADE71007492A2 /* Headers */,
 				E4E0B167223ADE71007492A2 /* Sources */,
 				E4E0B168223ADE71007492A2 /* Frameworks */,
-				E4E0B169223ADE71007492A2 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -133,16 +142,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXResourcesBuildPhase section */
-		E4E0B169223ADE71007492A2 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		E4E0B167223ADE71007492A2 /* Sources */ = {
@@ -211,6 +210,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "";
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -263,6 +263,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				OTHER_LDFLAGS = "";
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -276,7 +277,11 @@
 				DEVELOPMENT_TEAM = P5C2GV8M96;
 				INFOPLIST_FILE = tumblrtv2/Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Screen Savers";
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/tumblrtv2",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_BUNDLE_IDENTIFIER = webscaleaf.tumblrtv2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -293,7 +298,11 @@
 				DEVELOPMENT_TEAM = P5C2GV8M96;
 				INFOPLIST_FILE = tumblrtv2/Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Screen Savers";
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/tumblrtv2",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_BUNDLE_IDENTIFIER = webscaleaf.tumblrtv2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
