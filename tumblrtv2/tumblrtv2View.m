@@ -28,17 +28,22 @@
 
 - (NSOpenGLView *)createGLView
 {
-    NSOpenGLPixelFormatAttribute attribs[] = {
-        NSOpenGLPFAAccelerated,
+    //This is pretty important.. OS X starts always with a context that only supports openGL 2.1
+    //This will ditch the classic OpenGL and initialises openGL 4.1
+    NSOpenGLPixelFormatAttribute pixelFormatAttributes[] ={
+        NSOpenGLPFAOpenGLProfile, NSOpenGLProfileVersion3_2Core,
+        NSOpenGLPFAColorSize    , 24                           ,
+        NSOpenGLPFAAlphaSize    , 8                            ,
+        NSOpenGLPFADoubleBuffer ,
+        NSOpenGLPFAAccelerated  ,
+        NSOpenGLPFANoRecovery   ,
         0
     };
+    NSOpenGLPixelFormat* format = [[NSOpenGLPixelFormat alloc]initWithAttributes:pixelFormatAttributes];
     
-    NSOpenGLPixelFormat* format = [[NSOpenGLPixelFormat alloc] initWithAttributes:attribs];
     NSOpenGLView* glview = [[NSOpenGLView alloc] initWithFrame:NSZeroRect pixelFormat:format];
     
     NSAssert(glview, @"Unable to create OpenGL view!");
-
-    
     return glview;
 }
 
@@ -66,34 +71,9 @@
 - (void)animateOneFrame
 {
     [self.glView.openGLContext makeCurrentContext];
-    float point = HelloWorld(); // from render.go
-    glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-    
-    static float vertices[] = {
-        1.0f, -1.0f, 0.0f,
-        0.0f, 1.0f, 0.0f,
-        -1.0f, -1.0f, 0.0f
-        
-    };
-    
-    float colors[] = {
-        1.0f, point, 0.0f,
-        1.0f, 0.0f, 1.0f,
-        0.0f, 0.0f, 1.0f
-    };
-    
-    glVertexPointer(3, GL_FLOAT, 0, vertices);
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glColorPointer(3, GL_FLOAT, 0, colors);
-    glEnableClientState(GL_COLOR_ARRAY);
-    
-    glDrawArrays(GL_TRIANGLES, 0, 3);
-    
-    glDisableClientState(GL_COLOR_ARRAY);
-    glDisableClientState(GL_VERTEX_ARRAY);
-    
-    glFlush();
+    GoGLRender();
+    [self.glView update];
+    [[self.glView openGLContext] flushBuffer];
     [self setNeedsDisplay:YES];
     return;
 }
