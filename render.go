@@ -3,8 +3,14 @@ package main
 import "C"
 
 import (
+	"fmt"
+	"image"
+	"image/draw"
 	"image/gif"
+	"io/ioutil"
 	"log"
+	"os/user"
+	"strings"
 	"unsafe"
 
 	"github.com/go-gl/gl/v4.1-core/gl"
@@ -56,8 +62,21 @@ var (
 )
 
 func goglInit() {
-	go fetchGIFs("cat")
-	err := gl.Init()
+	usr, err := user.Current()
+	if err != nil {
+		panic(err)
+	}
+	tagBytes, err := ioutil.ReadFile(fmt.Sprintf("%s/.tumblrtvconfig", usr.HomeDir))
+	var tags []string
+	if err != nil {
+		tags = []string{"sakuga", "cyberpunk", "trippy", "tumblr", "staff"}
+	} else {
+		tags = strings.Split(string(tagBytes), ",")
+	}
+
+	go fetchGIFs(tags...)
+
+	err = gl.Init()
 	if err != nil {
 		panic(err)
 	}
@@ -90,8 +109,11 @@ func initGIF(g *gif.GIF) {
 	currentFrame = 0
 
 	currentTextures = nil
-	for _, image := range g.Image {
-		tex, err := NewTexture(image, gl.CLAMP_TO_EDGE, gl.CLAMP_TO_EDGE)
+	img := image.NewRGBA(g.Image[0].Bounds())
+	for _, gFrame := range g.Image {
+		bounds := gFrame.Bounds()
+		draw.Draw(img, bounds, gFrame, bounds.Min, draw.Src)
+		tex, err := NewTexture(img, gl.CLAMP_TO_BORDER, gl.CLAMP_TO_EDGE)
 		if err != nil {
 			panic(err)
 		}
@@ -114,8 +136,8 @@ func GoGLRender() {
 		currentFramesOnGIF++
 	}
 
-	gl.ClearColor(0, 0, 0, 1.0)
-	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+	//gl.ClearColor(0, 0, 0, 1.0)
+	//gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 	gl.UseProgram(program)
 	maxCount = uint64(currentGIF.Delay[currentFrame])
 	if currentCount < maxCount {

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"image/gif"
 	"io/ioutil"
+	"math/rand"
 	"net/http"
 
 	"github.com/gobuffalo/packr"
@@ -46,8 +47,10 @@ func fetchGIFs(tags ...string) {
 	}
 
 	gifPipeline <- maddenGIF
+
 	for {
-		resp, err := http.Get(fmt.Sprintf("https://api.tumblr.com/v2/gif/search/cat?api_key=%s", tumblrAPIKey))
+		tag := tags[rand.Intn(len(tags))]
+		resp, err := http.Get(fmt.Sprintf("https://api.tumblr.com/v2/gif/search/%s?api_key=%s", tag, tumblrAPIKey))
 		if err != nil {
 			panic(err)
 		}
