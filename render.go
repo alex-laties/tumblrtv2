@@ -5,7 +5,6 @@ import "C"
 import (
 	"fmt"
 	"image"
-	"image/draw"
 	"image/gif"
 	"io/ioutil"
 	"log"
@@ -109,15 +108,27 @@ func initGIF(g *gif.GIF) {
 	currentFrame = 0
 
 	currentTextures = nil
-	img := image.NewRGBA(g.Image[0].Bounds())
+	var lastFrame *image.Paletted
 	for _, gFrame := range g.Image {
-		bounds := gFrame.Bounds()
-		draw.Draw(img, bounds, gFrame, bounds.Min, draw.Src)
-		tex, err := NewTexture(img, gl.CLAMP_TO_BORDER, gl.CLAMP_TO_EDGE)
+		if lastFrame != nil {
+			for x := lastFrame.Rect.Min.X; x < lastFrame.Rect.Max.X; x++ {
+				for y := lastFrame.Rect.Min.Y; y < lastFrame.Rect.Max.Y; y++ {
+					gFrameOffset := gFrame.PixOffset(x, y)
+					if 0 > gFrameOffset || gFrameOffset > len(gFrame.Pix)-1 {
+						continue
+					}
+					if gFrame.Pix[gFrameOffset] == 255 {
+						gFrame.Pix[gFrameOffset] = lastFrame.Pix[lastFrame.PixOffset(x, y)]
+					}
+				}
+			}
+		}
+		tex, err := NewTexture(gFrame, gl.CLAMP_TO_BORDER, gl.CLAMP_TO_EDGE)
 		if err != nil {
 			panic(err)
 		}
 		currentTextures = append(currentTextures, tex)
+		lastFrame = gFrame
 	}
 
 	currentGIF = g
