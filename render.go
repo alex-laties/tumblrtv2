@@ -3,7 +3,10 @@ package main
 import "C"
 
 import (
+	"bytes"
 	"fmt"
+	"image/gif"
+	"io/ioutil"
 	"log"
 	"strings"
 	"unsafe"
@@ -12,7 +15,11 @@ import (
 )
 
 var (
-	program uint32
+	currentGIF                                             *gif.GIF
+	perGIFFrames                                           uint64 = 303 // 10 seconds per gif
+	globalFrameCount, currentFrame, currentCount, maxCount uint64
+	currentFramesOnGIF                                     uint64
+	program                                                uint32
 
 	vertexShaderSource = `
 		#version 410 core
@@ -79,12 +86,15 @@ var (
 		0, 1, 2, // top triangle
 		0, 2, 3, // bottom triangle
 	}
-	triangleVAO   uint32
-	imageVAO      uint32
-	maddenTexture *Texture
+	triangleVAO     uint32
+	imageVAO        uint32
+	maddenTexture   *Texture
+	maddenTextures  []*Texture
+	currentTextures []*Texture
 )
 
 func goglInit() {
+	go fetchGIFs("cat")
 	err := gl.Init()
 	if err != nil {
 		panic(err)
@@ -106,11 +116,45 @@ func goglInit() {
 	gl.AttachShader(program, vertexShader)
 	gl.AttachShader(program, fragmentShader)
 	gl.LinkProgram(program)
+	maddenGIFBytes, err := ioutil.ReadFile("/tmp/madden.gif")
+	if err != nil {
+		panic(err)
+	}
+	maddenReader := bytes.NewBuffer(maddenGIFBytes)
+	maddenGIF, err := gif.DecodeAll(maddenReader)
+	if err != nil {
+		panic(err)
+	}
+
+	currentGIF = maddenGIF
+	for _, image := range maddenGIF.Image {
+		tex, err := NewTexture(image, gl.CLAMP_TO_EDGE, gl.CLAMP_TO_EDGE)
+		if err != nil {
+			panic(err)
+		}
+		maddenTextures = append(maddenTextures, tex)
+	}
+
+	currentTextures = maddenTextures
 
 	maddenTexture, err = NewTextureFromFile("/tmp/madden.jpg", gl.CLAMP_TO_EDGE, gl.CLAMP_TO_EDGE)
 	if err != nil {
 		panic(err)
 	}
+}
+
+func initGIF(g *gif.GIF) {
+	currentTextures = nil
+
+	for _, image := range g.Image {
+		tex, err := NewTexture(image, gl.CLAMP_TO_EDGE, gl.CLAMP_TO_EDGE)
+		if err != nil {
+			panic(err)
+		}
+		currentTextures = append(currentTextures, tex)
+	}
+
+	currentGIF = g
 }
 
 //export GoGLRender
@@ -119,16 +163,34 @@ func GoGLRender() {
 		goglInit() // have to init in initial render loop because of not having the opengl context until here
 	}
 
+	if currentFramesOnGIF > perGIFFrames {
+		currentFramesOnGIF = 0
+		initGIF(<-gifPipeline)
+	} else {
+		currentFramesOnGIF++
+	}
+
 	gl.ClearColor(0, 0, 0, 1.0)
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 	gl.UseProgram(program)
+	maxCount = uint64(currentGIF.Delay[currentFrame])
+	if currentCount < maxCount {
+		currentCount += 3
+	} else {
+		currentFrame = (currentFrame + 1) % uint64(len(currentGIF.Image))
+		currentCount = 0
+		maxCount = uint64(currentGIF.Delay[currentFrame])
+	}
 
-	maddenTexture.Bind(gl.TEXTURE0)
-	maddenTexture.SetUniform(gl.GetUniformLocation(program, gl.Str("wat\x00")))
+	textureToUse := currentTextures[currentFrame]
+
+	textureToUse.Bind(gl.TEXTURE0)
+	textureToUse.SetUniform(gl.GetUniformLocation(program, gl.Str("wat\x00")))
 	gl.BindVertexArray(imageVAO)
 	gl.DrawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, unsafe.Pointer(nil))
 	gl.BindVertexArray(0)
-	maddenTexture.UnBind()
+	textureToUse.UnBind()
+	globalFrameCount++
 }
 
 // makeVAO initializes and returns a vertex array from the points provided.

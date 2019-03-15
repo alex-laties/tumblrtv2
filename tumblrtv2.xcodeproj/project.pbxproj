@@ -20,6 +20,7 @@
 		E44471A7223AEAF100381122 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		E44471A9223AEAF700381122 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		E44471AE223AEF7700381122 /* go.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = go.a; sourceTree = "<group>"; };
+		E451FDFD223B444F00840EAB /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = assets; sourceTree = "<group>"; };
 		E4BCD0C7223B1126007805B4 /* go.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = go.h; sourceTree = "<group>"; };
 		E4E0B16B223ADE71007492A2 /* tumblrtv2.saver */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = tumblrtv2.saver; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4E0B16E223ADE71007492A2 /* tumblrtv2View.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = tumblrtv2View.h; sourceTree = "<group>"; };
@@ -71,6 +72,7 @@
 		E4E0B16D223ADE71007492A2 /* tumblrtv2 */ = {
 			isa = PBXGroup;
 			children = (
+				E451FDFD223B444F00840EAB /* assets */,
 				E4BCD0C7223B1126007805B4 /* go.h */,
 				E44471AE223AEF7700381122 /* go.a */,
 				E4E0B16E223ADE71007492A2 /* tumblrtv2View.h */,
