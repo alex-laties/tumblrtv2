@@ -8,6 +8,8 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"net/http"
+	"net/url"
+	"strings"
 	"time"
 
 	"github.com/gobuffalo/packr"
@@ -41,7 +43,7 @@ var (
 
 func fetchGIFs(tags ...string) {
 	rand.Seed(time.Now().Unix())
-	maddenGIFBytes := gifBox.Bytes("madden.gif")
+	maddenGIFBytes := gifBox.Bytes("whitenoise.gif")
 	maddenReader := bytes.NewBuffer(maddenGIFBytes)
 	maddenGIF, err := gif.DecodeAll(maddenReader)
 	if err != nil {
@@ -51,7 +53,7 @@ func fetchGIFs(tags ...string) {
 	gifPipeline <- maddenGIF
 
 	for {
-		tag := tags[rand.Intn(len(tags))]
+		tag := url.QueryEscape(strings.TrimSpace(tags[rand.Intn(len(tags))]))
 		resp, err := http.Get(fmt.Sprintf("https://api.tumblr.com/v2/gif/search/%s?api_key=%s", tag, tumblrAPIKey))
 		if err != nil {
 			panic(err)
@@ -82,6 +84,10 @@ func fetchGIFs(tags ...string) {
 			g, err := gif.DecodeAll(resp.Body)
 			if err != nil {
 				panic(err)
+			}
+			if len(g.Image) < 3 {
+				// throw this badboy away
+				continue
 			}
 			gifPipeline <- g
 		}

@@ -17,7 +17,7 @@ import (
 
 var (
 	currentGIF                                             *gif.GIF
-	perGIFFrames                                           uint64 = 303 // 10 seconds per gif
+	perGIFFrames                                           uint64 = 60 // initially 2 seconds, then 10 seconds per gif
 	globalFrameCount, currentFrame, currentCount, maxCount uint64
 	currentFramesOnGIF                                     uint64
 	program                                                uint32
@@ -143,6 +143,7 @@ func GoGLRender() {
 
 	if currentFramesOnGIF > perGIFFrames {
 		initGIF(<-gifPipeline)
+		perGIFFrames = 303
 	} else {
 		currentFramesOnGIF++
 	}
