@@ -1,14 +1,19 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"image/gif"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/gobuffalo/packr"
 )
 
 const tumblrAPIKey = "oK7KDFFbmTXCDKyPoehhKMHlbWMGOZVOWejcSuNLSJGYunjdkN"
+
+var gifBox = packr.NewBox("./assets/gifs")
 
 type TumblrAPIMeta struct {
 	Status int    `json:"status"`
@@ -33,32 +38,42 @@ var (
 )
 
 func fetchGIFs(tags ...string) {
-	resp, err := http.Get(fmt.Sprintf("https://api.tumblr.com/v2/gif/search/cat?api_key=%s", tumblrAPIKey))
+	maddenGIFBytes := gifBox.Bytes("madden.gif")
+	maddenReader := bytes.NewBuffer(maddenGIFBytes)
+	maddenGIF, err := gif.DecodeAll(maddenReader)
 	if err != nil {
 		panic(err)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		panic(err)
-	}
-
-	var t TumblrGIFSearchAPIResponse
-	err = json.Unmarshal(body, &t)
-	if err != nil {
-		panic(err)
-	}
-
-	for _, gifr := range t.Response.GIFs {
-		resp, err = http.Get(gifr.MediaURL)
+	gifPipeline <- maddenGIF
+	for {
+		resp, err := http.Get(fmt.Sprintf("https://api.tumblr.com/v2/gif/search/cat?api_key=%s", tumblrAPIKey))
 		if err != nil {
 			panic(err)
 		}
 
-		g, err := gif.DecodeAll(resp.Body)
+		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			panic(err)
 		}
-		gifPipeline <- g
+
+		var t TumblrGIFSearchAPIResponse
+		err = json.Unmarshal(body, &t)
+		if err != nil {
+			panic(err)
+		}
+
+		for _, gifr := range t.Response.GIFs {
+			resp, err = http.Get(gifr.MediaURL)
+			if err != nil {
+				panic(err)
+			}
+
+			g, err := gif.DecodeAll(resp.Body)
+			if err != nil {
+				panic(err)
+			}
+			gifPipeline <- g
+		}
 	}
 }
