@@ -12,6 +12,7 @@ import (
 	"unsafe"
 
 	"github.com/go-gl/gl/v4.1-core/gl"
+	"github.com/gobuffalo/packr"
 )
 
 var (
@@ -20,6 +21,8 @@ var (
 	globalFrameCount, currentFrame, currentCount, maxCount uint64
 	currentFramesOnGIF                                     uint64
 	program                                                uint32
+
+	shaderBox = packr.NewBox("./assets/shaders")
 
 	vertexShaderSource = `
 		#version 410 core
@@ -104,11 +107,13 @@ func goglInit() {
 	program = gl.CreateProgram()
 	triangleVAO = makeVAO(triangle)
 	imageVAO = makeImageVAO(image_vertices, image_indices)
-	vertexShader, err := compileShader(vertexShaderSource, gl.VERTEX_SHADER)
+	vertexShaderSource, _ := shaderBox.FindString("basic.vert")
+	vertexShader, err := compileShader(vertexShaderSource+"\x00", gl.VERTEX_SHADER)
 	if err != nil {
 		panic(err)
 	}
-	fragmentShader, err := compileShader(fragmentShaderSource, gl.FRAGMENT_SHADER)
+	fragmentShaderSource, _ := shaderBox.FindString("basic.frag")
+	fragmentShader, err := compileShader(fragmentShaderSource+"\x00", gl.FRAGMENT_SHADER)
 	if err != nil {
 		panic(err)
 	}
