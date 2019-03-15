@@ -6,7 +6,6 @@ import (
 	"bytes"
 	"fmt"
 	"image/gif"
-	"io/ioutil"
 	"log"
 	"strings"
 	"unsafe"
@@ -23,39 +22,7 @@ var (
 	program                                                uint32
 
 	shaderBox = packr.NewBox("./assets/shaders")
-
-	vertexShaderSource = `
-		#version 410 core
-
-		layout (location = 0) in vec3 position;
-		layout (location = 1) in vec3 color;
-		layout (location = 2) in vec2 texCoord;
-
-		out vec3 ourColor;
-		out vec2 TexCoord;
-
-		void main()
-		{
-				gl_Position = vec4(position, 1.0);
-				TexCoord = texCoord;    // pass the texture coords on to the fragment shader
-		}
-` + "\x00"
-
-	fragmentShaderSource = `
-    #version 410 core
-
-		in vec3 ourColor;
-		in vec2 TexCoord;
-
-		out vec4 color;
-
-		uniform sampler2D wat;
-
-		void main()
-		{
-				color = texture(wat, TexCoord);
-		}
-` + "\x00"
+	gifBox    = packr.NewBox("./assets/gifs")
 
 	triangle = []float32{
 		1, -1, 1,
@@ -91,7 +58,6 @@ var (
 	}
 	triangleVAO     uint32
 	imageVAO        uint32
-	maddenTexture   *Texture
 	maddenTextures  []*Texture
 	currentTextures []*Texture
 )
@@ -121,10 +87,7 @@ func goglInit() {
 	gl.AttachShader(program, vertexShader)
 	gl.AttachShader(program, fragmentShader)
 	gl.LinkProgram(program)
-	maddenGIFBytes, err := ioutil.ReadFile("/tmp/madden.gif")
-	if err != nil {
-		panic(err)
-	}
+	maddenGIFBytes := gifBox.Bytes("madden.gif")
 	maddenReader := bytes.NewBuffer(maddenGIFBytes)
 	maddenGIF, err := gif.DecodeAll(maddenReader)
 	if err != nil {
@@ -141,11 +104,6 @@ func goglInit() {
 	}
 
 	currentTextures = maddenTextures
-
-	maddenTexture, err = NewTextureFromFile("/tmp/madden.jpg", gl.CLAMP_TO_EDGE, gl.CLAMP_TO_EDGE)
-	if err != nil {
-		panic(err)
-	}
 }
 
 func initGIF(g *gif.GIF) {

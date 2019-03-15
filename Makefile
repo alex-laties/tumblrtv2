@@ -10,8 +10,8 @@ packr-bin:
 ifeq ($(strip $(PACKR)),)
 	@unset GO111MODULE && \
 		$(GO) get github.com/gobuffalo/packr/packr && \
-		echo "packr installed, please rerun make" && \
-		exit 2
+		echo "packr installed, rerunning make" && \
+		make && exit
 endif
 
 .PHONY: pack
@@ -24,6 +24,4 @@ archive:
 	@export $(EXPORTS) && \
 		$(GO) build $(GOFLAGS) -o $(TUMBLRTVDIR)/go.a
 
-all: archive
-
-.DEFAULT_GOAL:=all
+.DEFAULT_GOAL:=pack
