@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"net/http"
+	"time"
 
 	"github.com/gobuffalo/packr"
 )
@@ -39,6 +40,7 @@ var (
 )
 
 func fetchGIFs(tags ...string) {
+	rand.Seed(time.Now().Unix())
 	maddenGIFBytes := gifBox.Bytes("madden.gif")
 	maddenReader := bytes.NewBuffer(maddenGIFBytes)
 	maddenGIF, err := gif.DecodeAll(maddenReader)
@@ -65,6 +67,11 @@ func fetchGIFs(tags ...string) {
 		if err != nil {
 			panic(err)
 		}
+
+		// shuffle GIFs
+		rand.Shuffle(len(t.Response.GIFs), func(i, j int) {
+			t.Response.GIFs[i], t.Response.GIFs[j] = t.Response.GIFs[j], t.Response.GIFs[i]
+		})
 
 		for _, gifr := range t.Response.GIFs {
 			resp, err = http.Get(gifr.MediaURL)
